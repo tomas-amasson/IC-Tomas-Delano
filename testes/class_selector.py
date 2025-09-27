@@ -87,11 +87,11 @@ class GameModeMessage_Schema(Message_Schema):
 
 
 class CaseSelectedMessage(Message):
-    timestats = db.Column(db.String(MAX_STR), nullable= False)
+    timestats_ = db.Column(db.String(MAX_STR), nullable= False)
 
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats):
+    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats_):
         super().__init__(message_type, time, id_jogador, gameID, resourceID)
-        self.timestats = timestats
+        self.timestats_ = timestats_
 
     @classmethod
     def extract(cls, data: dict):
@@ -103,19 +103,19 @@ class CaseSelectedMessage_Schema(Message_Schema):
     class Meta(Message_Schema.Meta):
         model = CaseSelectedMessage
     
-    timestats = fields.String(required= True)
+    timestats_ = fields.String(required= True)
 
 
 class PowerUpMessage(Message):
-    timestats = db.Column(db.String(MAX_STR), nullable= False)
+    timestats_ = db.Column(db.String(MAX_STR), nullable= False)
     powerupType = db.Column(db.Integer, nullable= False)
     powerup = db.Column(db.Boolean, nullable= False)
     powerupUtilizado = db.Column(db.Integer, nullable= False)
     
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats, powerupType, powerup, powerupUtilizado):
+    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats_, powerupType, powerup, powerupUtilizado):
         super().__init__(message_type, time, id_jogador, gameID, resourceID)
 
-        self.timestats = timestats
+        self.timestats_ = timestats_
         self.powerupType = powerupType
         self.powerup = powerup
         self.powerupUtilizado = powerupUtilizado
@@ -130,21 +130,21 @@ class PowerUpMessage_Schema(Message_Schema):
     class Meta(Message_Schema.Meta):
         model = PowerUpMessage
     
-    timestats = fields.String(required= True)
+    timestats_ = fields.String(required= True)
     powerupType = fields.Integer(required= True)
     powerup = fields.Boolean(required= True)
     powerupUtilizado = fields.Integer(required= True)
 
 
 class CaseDetailsMessage(Message):
-    timestats = db.Column(db.String(MAX_STR), nullable= False)
+    timestats_ = db.Column(db.String(MAX_STR), nullable= False)
     powerup = db.Column(db.Boolean, nullable= False)
     detalhesUtilizado = db.Column(db.Integer, nullable= False)
 
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats, powerup, detalhesUtilizado):
+    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats_, powerup, detalhesUtilizado):
         super().__init__(message_type, time, id_jogador, gameID, resourceID)
 
-        self.timestats = timestats
+        self.timestats_ = timestats_
         self.powerup = powerup
         self.detalhesUtilizado = detalhesUtilizado
 
@@ -159,18 +159,18 @@ class CaseDetailsMessage_Schema(Message_Schema):
     class Meta(Message_Schema.Meta):
         model = CaseDetailsMessage
     
-    timestats = fields.String(required= True)
+    timestats_ = fields.String(required= True)
     powerup = fields.Boolean(required= True)
     detalhesUtilizado = fields.Integer(required= True)
 
 class WordSendMessage(Message):
-    timestats = db.Column(db.String(MAX_STR), nullable= False)
+    timestats_ = db.Column(db.String(MAX_STR), nullable= False)
     palavraCorreta = db.Column(db.Boolean, nullable= False)
 
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats, palavraCorreta):
+    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats_, palavraCorreta):
         super().__init__(message_type, time, id_jogador, gameID, resourceID)
 
-        self.timestats = timestats
+        self.timestats_ = timestats_
         self.palavraCorreta = palavraCorreta
 
     @classmethod 
@@ -183,7 +183,7 @@ class WordSendMessage_Schema(Message_Schema):
     class Meta(Message_Schema.Meta):
         model = WordSendMessage
     
-    timestats = fields.String(required= True)
+    timestats_ = fields.String(required= True)
     palavraCorreta = fields.Boolean(required= True)
 
 
