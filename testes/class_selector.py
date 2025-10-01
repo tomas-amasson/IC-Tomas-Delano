@@ -1,13 +1,32 @@
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
+from os import environ
+from dotenv import load_dotenv
+
 
 from marshmallow_sqlalchemy import SQLAlchemySchema
 from marshmallow import fields
 
 MAX_STR = 30
 
+def get_uri():
+    uri = ''
+    load_dotenv()
+
+
+    psswrd = environ.get('MYSQL_ROOT_PASSWORD')
+    host = environ.get("MYSQL_HOST")
+    db = environ.get("MYSQL_DATABASE")
+
+    uri = "mysql+pymysql://root:" + psswrd + '@' + host+ '/' + db
+    print(uri)
+    return uri
+
+
+
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:87654321@localhost/flaskdb"
+app.config['SQLALCHEMY_DATABASE_URI'] = get_uri()
 db = SQLAlchemy(app)
 
 class Message(db.Model):
