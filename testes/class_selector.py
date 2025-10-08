@@ -30,6 +30,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = get_uri()
 db = SQLAlchemy(app)
 
 class Message(db.Model):
+    __tablename__ = "message"
     id = db.Column(db.Integer, primary_key= True)
     message_type = db.Column(db.String(MAX_STR), nullable= False)
     time = db.Column(db.Float, nullable= False)
@@ -37,6 +38,10 @@ class Message(db.Model):
     gameID = db.Column(db.Integer, nullable= False)
     resourceID = db.Column(db.Integer, nullable= False)
 
+    __mapper_args__ = {
+        'polymorphic_identity': "message",
+        'polymorphic_on': message_type
+    }
 
     def __init__(self, message_type, time, id_jogador, gameID, resourceID):
         self.message_type = message_type
@@ -49,9 +54,14 @@ class Message(db.Model):
         db.session.add(self)
         db.session.commit()
         return self
+    
+    @classmethod
+    def extract_message(cls, data):
+        return cls(data['message_type'], data['time'], data['id_jogador'], data['gameID'], data['resourceID'])
 
 class Message_Schema(SQLAlchemySchema):
     class Meta(SQLAlchemySchema.Meta):
+        model = Message
         sqla_session = db.session
         load_instance = True
 
@@ -65,7 +75,13 @@ class Message_Schema(SQLAlchemySchema):
 
 
 class PlayGameMessage(Message):
+    __tablename__ = "play_game_message"
+    id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
     timeType = db.Column(db.Integer)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'PlayGameMessage'
+    }
 
     def __init__(self, message_type, time, id_jogador, gameID, resourceID, timeType):
         super().__init__(message_type, time, id_jogador, gameID, resourceID)
@@ -86,7 +102,13 @@ class PlayGameMessage_Schema(Message_Schema):
 
 
 class GameModeMessage(Message):
+    __tablename__ = "game_mode_message"
+    id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
     gameMode = db.Column(db.Integer)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'GameModeMessage'
+    }
 
     def __init__(self, message_type, time, id_jogador, gameID, resourceID, gameMode):
         super().__init__(message_type, time, id_jogador, gameID, resourceID)
@@ -110,6 +132,10 @@ class CaseSelectedMessage(Message):
 
     id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
     timestats = db.Column(db.String(MAX_STR))
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'CaseSelectedMessage'
+    }
 
     def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats):
         super().__init__(message_type, time, id_jogador, gameID, resourceID)
@@ -136,6 +162,10 @@ class PowerUpMessage(Message):
     powerupType = db.Column(db.Integer)
     powerup = db.Column(db.Boolean)
     powerupUtilizado = db.Column(db.Integer)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'PowerUpMessage'
+    }
     
     def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats, powerupType, powerup, powerupUtilizado):
         super().__init__(message_type, time, id_jogador, gameID, resourceID)
@@ -168,6 +198,10 @@ class CaseDetailsMessage(Message):
     timestats = db.Column(db.String(MAX_STR))
     powerup = db.Column(db.Boolean)
     detalhesUtilizado = db.Column(db.Integer)
+    
+    __mapper_args__ = {
+        'polymorphic_identity': 'CaseDetailsMessage'
+    }
 
     def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats, powerup, detalhesUtilizado):
         super().__init__(message_type, time, id_jogador, gameID, resourceID)
@@ -192,8 +226,15 @@ class CaseDetailsMessage_Schema(Message_Schema):
     detalhesUtilizado = fields.Integer(required= True)
 
 class WordSendMessage(Message):
+    __tablename__ = "word_send_message"
+
+    id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
     timestats = db.Column(db.String(MAX_STR))
     palavraCorreta = db.Column(db.Boolean)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'WordSendMessage'
+    }
 
     def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats, palavraCorreta):
         super().__init__(message_type, time, id_jogador, gameID, resourceID)
@@ -216,8 +257,15 @@ class WordSendMessage_Schema(Message_Schema):
 
 
 class WordValidationMessage(Message):
+    __tablename__ = "word_validation_message"
+
+    id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
     word = db.Column(db.String(MAX_STR))
     correct = db.Column(db.Boolean)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'WordValidationMessage'
+    }
 
     def __init__(self, message_type, time, id_jogador, gameID, resourceID, word, correct):
         super().__init__(message_type, time, id_jogador, gameID, resourceID)
@@ -245,7 +293,7 @@ def select(data):
     #informação de entrada
 
     #criação da classe selecionada
-    messages = {"PlayGameMessage": lambda: (PlayGameMessage.extract(data), PlayGameMessage_Schema), "GameModeMessage": lambda: (GameModeMessage.extract(data), GameModeMessage_Schema), "CaseSelectedMessage": lambda: (CaseSelectedMessage.extract(data), CaseSelectedMessage_Schema), "PowerUpMessage": lambda: (PowerUpMessage.extract(data), PowerUpMessage_Schema), "CaseDetailsMessage": lambda: (CaseDetailsMessage.extract(data), CaseDetailsMessage_Schema), "WordSendMessage": lambda: (WordSendMessage.extract(data), WordSendMessage_Schema), "WordValidationMessage": lambda: (WordValidationMessage.extract(data), WordValidationMessage_Schema)}
+    messages = {"Message": lambda: (Message.extract_message(data), Message_Schema), "PlayGameMessage": lambda: (PlayGameMessage.extract(data), PlayGameMessage_Schema), "GameModeMessage": lambda: (GameModeMessage.extract(data), GameModeMessage_Schema), "CaseSelectedMessage": lambda: (CaseSelectedMessage.extract(data), CaseSelectedMessage_Schema), "PowerUpMessage": lambda: (PowerUpMessage.extract(data), PowerUpMessage_Schema), "CaseDetailsMessage": lambda: (CaseDetailsMessage.extract(data), CaseDetailsMessage_Schema), "WordSendMessage": lambda: (WordSendMessage.extract(data), WordSendMessage_Schema), "WordValidationMessage": lambda: (WordValidationMessage.extract(data), WordValidationMessage_Schema)}
     
     
     cms, schm = messages[data['message_type']]()
