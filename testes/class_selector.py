@@ -18,7 +18,7 @@ def get_uri():
     host = environ.get("MYSQL_HOST")
     db = environ.get("MYSQL_DATABASE")
 
-    uri = "mysql+pymysql://root:" + psswrd + '@' + host+ '/' + db
+    uri = "mysql+pymysql://root:" + psswrd + '@' + host + '/' + db
     print(uri)
     return uri
 
@@ -279,4 +279,4 @@ def post():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(debug= True)
+    app.run(host="0.0.0.0", port=5000, debug= True)
