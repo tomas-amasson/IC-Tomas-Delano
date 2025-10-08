@@ -1,6 +1,8 @@
 FROM python:3.12.3
 WORKDIR /api
 
+ENV TZ=America/Sao_Paulo
+
 # somente dependencias para deixar o api mutável
 COPY libraries.txt .
 RUN pip install --no-cache-dir -r libraries.txt
