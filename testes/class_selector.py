@@ -348,7 +348,7 @@ def delete_id(id: int):
     db.session.delete(general)
     db.session.commit()
 
-    return make_response(jsonify([dumped, sdumped]))
+    return make_response(jsonify(sdumped))
 
 
 @app.route('/api', methods= ['POST'])
