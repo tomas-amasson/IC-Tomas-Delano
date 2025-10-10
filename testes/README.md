@@ -24,7 +24,6 @@ Também é necessário um arquivo ".env" com as seguintes informações:
 
 Para utilizar o docker, é necessário que:
 - MYSQL_HOST=db
-- a porta a ser utilizada deve ser: 3000
 
 ## Como Usar
 No seu terminal, rode:
@@ -47,7 +46,7 @@ Utilize um Postman, seguindo as instruções abaixo:
 Caso prefira usar um terminal para fazer as requisições, utilize:
 
 ```bash
-curl -X [FUNÇÃO] -H 'Content-Type: application/json' -d \'[DADOS]\' http://localhost:3000/api
+curl -X [FUNÇÃO] -H 'Content-Type: application/json' -d '[DADOS]' http://localhost:3000/api
 ```
 
 FUNÇÃO:
