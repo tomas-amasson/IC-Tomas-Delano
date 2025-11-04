@@ -32,21 +32,21 @@ db = SQLAlchemy(app)
 class Message(db.Model):
     __tablename__ = "message"
     id = db.Column(db.Integer, primary_key= True)
-    message_type = db.Column(db.String(MAX_STR), nullable= False)
+    messageType = db.Column(db.String(MAX_STR), nullable= False)
     time = db.Column(db.Float, nullable= False)
-    id_jogador = db.Column(db.Integer, nullable= False)
+    playerID = db.Column(db.Integer, nullable= False)
     gameID = db.Column(db.Integer, nullable= False)
     resourceID = db.Column(db.Integer, nullable= False)
 
     __mapper_args__ = {
         'polymorphic_identity': "Message",
-        'polymorphic_on': message_type
+        'polymorphic_on': messageType
     }
 
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID):
-        self.message_type = message_type
+    def __init__(self, messageType, time, playerID, gameID, resourceID):
+        self.messageType = messageType
         self.time = time
-        self.id_jogador = id_jogador
+        self.playerID = playerID
         self.gameID = gameID
         self.resourceID = resourceID
 
@@ -57,7 +57,7 @@ class Message(db.Model):
     
     @classmethod
     def extract_message(cls, data):
-        return cls(data['message_type'], data['time'], data['id_jogador'], data['gameID'], data['resourceID'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'])
 
 class Message_Schema(SQLAlchemySchema):
     class Meta(SQLAlchemySchema.Meta):
@@ -66,9 +66,9 @@ class Message_Schema(SQLAlchemySchema):
         load_instance = True
 
     id = fields.Integer(dump_only= True)
-    message_type = fields.String(required= True)
+    messageType = fields.String(required= True)
     time = fields.Float() # possivel bo, valor de origem: double
-    id_jogador = fields.Integer(required= True)
+    playerID = fields.Integer(required= True)
     gameID = fields.Integer(required= True)
     resourceID = fields.Integer(required= True)
 
@@ -83,14 +83,14 @@ class PlayGameMessage(Message):
         'polymorphic_identity': 'PlayGameMessage'
     }
 
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timeType):
-        super().__init__(message_type, time, id_jogador, gameID, resourceID)
+    def __init__(self, messageType, time, playerID, gameID, resourceID, timeType):
+        super().__init__(messageType, time, playerID, gameID, resourceID)
 
         self.timeType = timeType
 
     @classmethod
     def extract(cls, data: dict):
-        return cls(data['message_type'], data['time'], data['id_jogador'], data['gameID'], data['resourceID'], data['timeType'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['timeType'])
         
 
 class PlayGameMessage_Schema(Message_Schema):
@@ -110,13 +110,13 @@ class GameModeMessage(Message):
         'polymorphic_identity': 'GameModeMessage'
     }
 
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID, gameMode):
-        super().__init__(message_type, time, id_jogador, gameID, resourceID)
+    def __init__(self, messageType, time, playerID, gameID, resourceID, gameMode):
+        super().__init__(messageType, time, playerID, gameID, resourceID)
         self.gameMode = gameMode
 
     @classmethod
     def extract(cls, data: dict):
-        return cls(data['message_type'], data['time'], data['id_jogador'], data['gameID'], data['resourceID'], data['gameMode'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['gameMode'])
         
 
 
@@ -137,13 +137,13 @@ class CaseSelectedMessage(Message):
         'polymorphic_identity': 'CaseSelectedMessage'
     }
 
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats):
-        super().__init__(message_type, time, id_jogador, gameID, resourceID)
+    def __init__(self, messageType, time, playerID, gameID, resourceID, timestats):
+        super().__init__(messageType, time, playerID, gameID, resourceID)
         self.timestats = timestats
 
     @classmethod
     def extract(cls, data: dict):
-        return cls(data['message_type'], data['time'], data['id_jogador'], data['gameID'], data['resourceID'], data['timestats'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['timestats'])
         
         
 
@@ -167,8 +167,8 @@ class PowerUpMessage(Message):
         'polymorphic_identity': 'PowerUpMessage'
     }
     
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats, powerupType, powerup, powerupUtilizado):
-        super().__init__(message_type, time, id_jogador, gameID, resourceID)
+    def __init__(self, messageType, time, playerID, gameID, resourceID, timestats, powerupType, powerup, powerupUtilizado):
+        super().__init__(messageType, time, playerID, gameID, resourceID)
 
         self.timestats = timestats
         self.powerupType = powerupType
@@ -177,7 +177,7 @@ class PowerUpMessage(Message):
 
     @classmethod 
     def extract(cls, data: dict):
-        return cls(data['message_type'], data['time'], data['id_jogador'], data['gameID'], data['resourceID'], data['timestats'], data['powerupType'], data['powerup'], data['powerupUtilizado'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['timestats'], data['powerupType'], data['powerup'], data['powerupUtilizado'])
         
         
 
@@ -203,8 +203,8 @@ class CaseDetailsMessage(Message):
         'polymorphic_identity': 'CaseDetailsMessage'
     }
 
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats, powerup, detalhesUtilizado):
-        super().__init__(message_type, time, id_jogador, gameID, resourceID)
+    def __init__(self, messageType, time, playerID, gameID, resourceID, timestats, powerup, detalhesUtilizado):
+        super().__init__(messageType, time, playerID, gameID, resourceID)
 
         self.timestats = timestats
         self.powerup = powerup
@@ -213,7 +213,7 @@ class CaseDetailsMessage(Message):
 
     @classmethod 
     def extract(cls, data: dict):
-        return cls(data['message_type'], data['time'], data['id_jogador'], data['gameID'], data['resourceID'], data['timestats'], data['powerup'], data['detalhesUtilizado'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['timestats'], data['powerup'], data['detalhesUtilizado'])
         
 
 
@@ -236,15 +236,15 @@ class WordSendMessage(Message):
         'polymorphic_identity': 'WordSendMessage'
     }
 
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID, timestats, palavraCorreta):
-        super().__init__(message_type, time, id_jogador, gameID, resourceID)
+    def __init__(self, messageType, time, playerID, gameID, resourceID, timestats, palavraCorreta):
+        super().__init__(messageType, time, playerID, gameID, resourceID)
 
         self.timestats = timestats
         self.palavraCorreta = palavraCorreta
 
     @classmethod 
     def extract(cls, data: dict):
-        return cls(data['message_type'], data['time'], data['id_jogador'], data['gameID'], data['resourceID'], data['timestats'], data['palavraCorreta'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['timestats'], data['palavraCorreta'])
         
 
 
@@ -267,15 +267,15 @@ class WordValidationMessage(Message):
         'polymorphic_identity': 'WordValidationMessage'
     }
 
-    def __init__(self, message_type, time, id_jogador, gameID, resourceID, word, correct):
-        super().__init__(message_type, time, id_jogador, gameID, resourceID)
+    def __init__(self, messageType, time, playerID, gameID, resourceID, word, correct):
+        super().__init__(messageType, time, playerID, gameID, resourceID)
 
         self.word = word
         self.correct = correct
 
     @classmethod 
     def extract(cls, data: dict):
-        return cls(data['message_type'], data['time'], data['id_jogador'], data['gameID'], data['resourceID'], data['word'], data['correct'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['word'], data['correct'])
         
         
         
@@ -296,7 +296,7 @@ def select(data):
     messages = {"Message": lambda: (Message, Message_Schema), "PlayGameMessage": lambda: (PlayGameMessage, PlayGameMessage_Schema), "GameModeMessage": lambda: (GameModeMessage, GameModeMessage_Schema), "CaseSelectedMessage": lambda: (CaseSelectedMessage, CaseSelectedMessage_Schema), "PowerUpMessage": lambda: (PowerUpMessage, PowerUpMessage_Schema), "CaseDetailsMessage": lambda: (CaseDetailsMessage, CaseDetailsMessage_Schema), "WordSendMessage": lambda: (WordSendMessage, WordSendMessage_Schema), "WordValidationMessage": lambda: (WordValidationMessage, WordValidationMessage_Schema)}
     
     
-    cms, schm = messages[data['message_type']]()
+    cms, schm = messages[data['messageType']]()
     return cms, schm
 
 
@@ -354,6 +354,7 @@ def delete_id(id: int):
 @app.route('/api', methods= ['POST'])
 def post():
     data_in = request.get_json()
+    print(data_in)
     scls, sschm = select(data_in)
 
     message_schema = sschm()
