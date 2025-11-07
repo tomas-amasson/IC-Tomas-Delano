@@ -129,36 +129,30 @@ class GameModeMessage_Schema(Message_Schema):
 
 class CaseSelectedMessage(Message):
     __tablename__ = "case_selected_message"
-
     id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
-    timestats = db.Column(db.String(MAX_STR))
 
     __mapper_args__ = {
         'polymorphic_identity': 'CaseSelectedMessage'
     }
 
-    def __init__(self, messageType, time, playerID, gameID, resourceID, timestats):
+    def __init__(self, messageType, time, playerID, gameID, resourceID):
         super().__init__(messageType, time, playerID, gameID, resourceID)
-        self.timestats = timestats
 
     @classmethod
     def extract(cls, data: dict):
-        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['timestats'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data[''])
         
         
 
 class CaseSelectedMessage_Schema(Message_Schema):
     class Meta(Message_Schema.Meta):
         model = CaseSelectedMessage
-    
-    timestats = fields.String(required= True)
 
 
 class PowerUpMessage(Message):
     __tablename__ = "power_up_message"
 
     id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
-    timestats = db.Column(db.String(MAX_STR))
     powerupType = db.Column(db.Integer)
     powerup = db.Column(db.Boolean)
     powerupUtilizado = db.Column(db.Integer)
@@ -167,17 +161,16 @@ class PowerUpMessage(Message):
         'polymorphic_identity': 'PowerUpMessage'
     }
     
-    def __init__(self, messageType, time, playerID, gameID, resourceID, timestats, powerupType, powerup, powerupUtilizado):
+    def __init__(self, messageType, time, playerID, gameID, resourceID, powerupType, powerup, powerupUtilizado):
         super().__init__(messageType, time, playerID, gameID, resourceID)
 
-        self.timestats = timestats
         self.powerupType = powerupType
         self.powerup = powerup
         self.powerupUtilizado = powerupUtilizado
 
     @classmethod 
     def extract(cls, data: dict):
-        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['timestats'], data['powerupType'], data['powerup'], data['powerupUtilizado'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data[''], data['powerupType'], data['powerup'], data['powerupUtilizado'])
         
         
 
@@ -185,7 +178,6 @@ class PowerUpMessage_Schema(Message_Schema):
     class Meta(Message_Schema.Meta):
         model = PowerUpMessage
     
-    timestats = fields.String(required= True)
     powerupType = fields.Integer(required= True)
     powerup = fields.Boolean(required= True)
     powerupUtilizado = fields.Integer(required= True)
@@ -195,7 +187,6 @@ class CaseDetailsMessage(Message):
     __tablename__ = "case_details_message"
 
     id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
-    timestats = db.Column(db.String(MAX_STR))
     powerup = db.Column(db.Boolean)
     detalhesUtilizado = db.Column(db.Integer)
     
@@ -203,17 +194,16 @@ class CaseDetailsMessage(Message):
         'polymorphic_identity': 'CaseDetailsMessage'
     }
 
-    def __init__(self, messageType, time, playerID, gameID, resourceID, timestats, powerup, detalhesUtilizado):
+    def __init__(self, messageType, time, playerID, gameID, resourceID, powerup, detalhesUtilizado):
         super().__init__(messageType, time, playerID, gameID, resourceID)
 
-        self.timestats = timestats
         self.powerup = powerup
         self.detalhesUtilizado = detalhesUtilizado
 
 
     @classmethod 
     def extract(cls, data: dict):
-        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['timestats'], data['powerup'], data['detalhesUtilizado'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data[''], data['powerup'], data['detalhesUtilizado'])
         
 
 
@@ -221,7 +211,6 @@ class CaseDetailsMessage_Schema(Message_Schema):
     class Meta(Message_Schema.Meta):
         model = CaseDetailsMessage
     
-    timestats = fields.String(required= True)
     powerup = fields.Boolean(required= True)
     detalhesUtilizado = fields.Integer(required= True)
 
@@ -229,30 +218,26 @@ class WordSendMessage(Message):
     __tablename__ = "word_send_message"
 
     id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
-    timestats = db.Column(db.String(MAX_STR))
     palavraCorreta = db.Column(db.Boolean)
 
     __mapper_args__ = {
         'polymorphic_identity': 'WordSendMessage'
     }
 
-    def __init__(self, messageType, time, playerID, gameID, resourceID, timestats, palavraCorreta):
+    def __init__(self, messageType, time, playerID, gameID, resourceID, palavraCorreta):
         super().__init__(messageType, time, playerID, gameID, resourceID)
-
-        self.timestats = timestats
         self.palavraCorreta = palavraCorreta
 
     @classmethod 
     def extract(cls, data: dict):
-        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['timestats'], data['palavraCorreta'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data[''], data['palavraCorreta'])
         
 
 
 class WordSendMessage_Schema(Message_Schema):
     class Meta(Message_Schema.Meta):
         model = WordSendMessage
-    
-    timestats = fields.String(required= True)
+
     palavraCorreta = fields.Boolean(required= True)
 
 
@@ -286,6 +271,46 @@ class WordValidationMessage_Schema(Message_Schema):
     correct = fields.Boolean(required= True)
 
 
+class TimeStatsMessage(db.Model):
+    __tablename__ = "time_stats_message"
+    __mapper_args__ = {
+        'polymorphic_identity': 'TimeStatsMessage'
+    }
+    id         = db.Column(db.Integer, primary_key = True)
+    messageType = db.Column(db.String(MAX_STR), nullable = False)
+    time        = db.Column(db.String(8), nullable = False)
+    timeEvent   = db.Column(db.Integer, nullable = False)
+    timeType    = db.Column(db.Integer, nullable = False)
+    level       = db.Column(db.String(MAX_STR), nullable = True)
+
+    def __init__(self, messageType, time, timeEvent, timeType, level=None):
+        self.messageType = messageType
+        self.time = time
+        self.timeEvent = timeEvent
+        self.timeType = timeType
+        self.level = level
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
+    @classmethod 
+    def extract(cls, data: dict):
+        return cls(data['messageType'], data['time'], data['timeEvent'], data['timeType'], data['level'])
+
+class TimeStatsMessage_Schema(SQLAlchemySchema):
+    class Meta(SQLAlchemySchema.Meta):
+        model = TimeStatsMessage
+        sqla_session = db.session
+        load_instance = True
+    
+    id = fields.Integer(dump_only= True)
+    messageType = fields.String(required= True)
+    time = fields.String(required= True)
+    timeEvent = fields.Integer(required= True)
+    timeType = fields.Integer(required= True)
+    level = fields.String(required= False)
 
 
 
@@ -293,7 +318,7 @@ def select(data):
     #informação de entrada
 
     #criação da classe selecionada
-    messages = {"Message": lambda: (Message, Message_Schema), "PlayGameMessage": lambda: (PlayGameMessage, PlayGameMessage_Schema), "GameModeMessage": lambda: (GameModeMessage, GameModeMessage_Schema), "CaseSelectedMessage": lambda: (CaseSelectedMessage, CaseSelectedMessage_Schema), "PowerUpMessage": lambda: (PowerUpMessage, PowerUpMessage_Schema), "CaseDetailsMessage": lambda: (CaseDetailsMessage, CaseDetailsMessage_Schema), "WordSendMessage": lambda: (WordSendMessage, WordSendMessage_Schema), "WordValidationMessage": lambda: (WordValidationMessage, WordValidationMessage_Schema)}
+    messages = {"Message": lambda: (Message, Message_Schema), "PlayGameMessage": lambda: (PlayGameMessage, PlayGameMessage_Schema), "GameModeMessage": lambda: (GameModeMessage, GameModeMessage_Schema), "CaseSelectedMessage": lambda: (CaseSelectedMessage, CaseSelectedMessage_Schema), "PowerUpMessage": lambda: (PowerUpMessage, PowerUpMessage_Schema), "CaseDetailsMessage": lambda: (CaseDetailsMessage, CaseDetailsMessage_Schema), "WordSendMessage": lambda: (WordSendMessage, WordSendMessage_Schema), "WordValidationMessage": lambda: (WordValidationMessage, WordValidationMessage_Schema), "TimeStatsMessage": lambda: (TimeStatsMessage, TimeStatsMessage_Schema)}
     
     
     cms, schm = messages[data['messageType']]()
