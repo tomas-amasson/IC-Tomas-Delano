@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from dotenv import load_dotenv
-
+import datetime
 
 from marshmallow_sqlalchemy import SQLAlchemySchema
 from marshmallow import fields
@@ -33,7 +33,8 @@ class Message(db.Model):
     __tablename__ = "message"
     id = db.Column(db.Integer, primary_key= True)
     messageType = db.Column(db.String(MAX_STR), nullable= False)
-    time = db.Column(db.Float, nullable= False)
+    time = db.Column(db.DateTime, nullable=False)
+    time_s = db.Column(db.DateTime, nullable=False)
     playerID = db.Column(db.Integer, nullable= False)
     gameID = db.Column(db.Integer, nullable= False)
     resourceID = db.Column(db.Integer, nullable= False)
@@ -45,7 +46,8 @@ class Message(db.Model):
 
     def __init__(self, messageType, time, playerID, gameID, resourceID):
         self.messageType = messageType
-        self.time = time
+        self.time = time - datetime.timedelta(hours=3)
+        self.time_s = datetime.datetime.now()
         self.playerID = playerID
         self.gameID = gameID
         self.resourceID = resourceID
@@ -67,7 +69,7 @@ class Message_Schema(SQLAlchemySchema):
 
     id = fields.Integer(dump_only= True)
     messageType = fields.String(required= True)
-    time = fields.Float() # possivel bo, valor de origem: double
+    time = fields.DateTime(required=True, format="timestamp")
     playerID = fields.Integer(required= True)
     gameID = fields.Integer(required= True)
     resourceID = fields.Integer(required= True)
