@@ -79,27 +79,24 @@ class Message_Schema(SQLAlchemySchema):
 class PlayGameMessage(Message):
     __tablename__ = "play_game_message"
     id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
-    timeType = db.Column(db.Integer)
 
     __mapper_args__ = {
         'polymorphic_identity': 'PlayGameMessage'
     }
 
-    def __init__(self, messageType, time, playerID, gameID, resourceID, timeType):
+    def __init__(self, messageType, time, playerID, gameID, resourceID):
         super().__init__(messageType, time, playerID, gameID, resourceID)
-
-        self.timeType = timeType
 
     @classmethod
     def extract(cls, data: dict):
-        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['timeType'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'])
         
 
 class PlayGameMessage_Schema(Message_Schema):
     class Meta(Message_Schema.Meta):
         model = PlayGameMessage
 
-    timeType = fields.Integer(required= True)
+    # timeType = fields.Integer(required= True)
 
 
 
@@ -128,27 +125,33 @@ class GameModeMessage_Schema(Message_Schema):
 
     gameMode = fields.Integer(required= True)
 
-
 class CaseSelectedMessage(Message):
     __tablename__ = "case_selected_message"
     id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
+    caseID = db.Column(db.Integer)
 
     __mapper_args__ = {
         'polymorphic_identity': 'CaseSelectedMessage'
     }
 
-    def __init__(self, messageType, time, playerID, gameID, resourceID):
+    def __init__(self, messageType, time, playerID, gameID, resourceID, caseID):
         super().__init__(messageType, time, playerID, gameID, resourceID)
+
+        self.caseID = caseID
 
     @classmethod
     def extract(cls, data: dict):
-        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data[''])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['caseID'])
         
         
 
 class CaseSelectedMessage_Schema(Message_Schema):
     class Meta(Message_Schema.Meta):
         model = CaseSelectedMessage
+
+    caseID = fields.Integer(required= True)
+    
+    
 
 
 class PowerUpMessage(Message):
@@ -172,7 +175,7 @@ class PowerUpMessage(Message):
 
     @classmethod 
     def extract(cls, data: dict):
-        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data[''], data['powerupType'], data['powerup'], data['powerupUtilizado'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['powerupType'], data['powerup'], data['powerupUtilizado'])
         
         
 
@@ -205,7 +208,7 @@ class CaseDetailsMessage(Message):
 
     @classmethod 
     def extract(cls, data: dict):
-        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data[''], data['powerup'], data['detalhesUtilizado'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['powerup'], data['detalhesUtilizado'])
         
 
 
@@ -232,7 +235,7 @@ class WordSendMessage(Message):
 
     @classmethod 
     def extract(cls, data: dict):
-        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data[''], data['palavraCorreta'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['palavraCorreta'])
         
 
 
@@ -273,21 +276,21 @@ class WordValidationMessage_Schema(Message_Schema):
     correct = fields.Boolean(required= True)
 
 
-class TimeStatsMessage(db.Model):
+class TimeStatsMessage(Message):
     __tablename__ = "time_stats_message"
-    __mapper_args__ = {
-        'polymorphic_identity': 'TimeStatsMessage'
-    }
-    id         = db.Column(db.Integer, primary_key = True)
-    messageType = db.Column(db.String(MAX_STR), nullable = False)
-    time        = db.Column(db.String(8), nullable = False)
+
+    id = db.Column(db.Integer, db.ForeignKey("message.id"), primary_key= True)
     timeEvent   = db.Column(db.Integer, nullable = False)
     timeType    = db.Column(db.Integer, nullable = False)
     level       = db.Column(db.String(MAX_STR), nullable = True)
 
-    def __init__(self, messageType, time, timeEvent, timeType, level=None):
-        self.messageType = messageType
-        self.time = time
+    __mapper_args__ = {
+        'polymorphic_identity': 'TimeStatsMessage'
+    }
+
+    def __init__(self, messageType, time, playerID, gameID, resourceID, timeEvent, timeType, level='None'):
+        super().__init__(messageType, time, playerID, gameID, resourceID)
+       
         self.timeEvent = timeEvent
         self.timeType = timeType
         self.level = level
@@ -299,22 +302,15 @@ class TimeStatsMessage(db.Model):
 
     @classmethod 
     def extract(cls, data: dict):
-        return cls(data['messageType'], data['time'], data['timeEvent'], data['timeType'], data['level'])
+        return cls(data['messageType'], data['time'], data['playerID'], data['gameID'], data['resourceID'], data['timeEvent'], data['timeType'], data['level'])
 
-class TimeStatsMessage_Schema(SQLAlchemySchema):
-    class Meta(SQLAlchemySchema.Meta):
+class TimeStatsMessage_Schema(Message_Schema):
+    class Meta(Message_Schema.Meta):
         model = TimeStatsMessage
-        sqla_session = db.session
-        load_instance = True
-    
-    id = fields.Integer(dump_only= True)
-    messageType = fields.String(required= True)
-    time = fields.String(required= True)
+        
     timeEvent = fields.Integer(required= True)
     timeType = fields.Integer(required= True)
     level = fields.String(required= False)
-
-
 
 def select(data):
     #informação de entrada
@@ -326,14 +322,13 @@ def select(data):
     cms, schm = messages[data['messageType']]()
     return cms, schm
 
-
 @app.route('/api', methods= ['GET'])
 def get():
     all_messages = Message.query.all()
     message_schema = Message_Schema(many= True)
-
+        
     messages = message_schema.dump(all_messages)
-
+        
     idx = 0
     for e in messages:
         cms, schm = select(e)
@@ -342,8 +337,8 @@ def get():
         print(specific, schm)
         
         messages[idx] = specific[0]
-        idx += 1 
-
+        idx += 1
+    
     return make_response(jsonify({"messages": messages}))
 
 
