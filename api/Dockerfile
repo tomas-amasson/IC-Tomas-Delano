@@ -1,0 +1,12 @@
+FROM python:3.12.3
+
+WORKDIR /python-docker
+
+ENV TZ=America/Sao_Paulo
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
