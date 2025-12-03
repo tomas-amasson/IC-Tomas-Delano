@@ -13,9 +13,7 @@ mkdir dump
 cp ~/caminho/backup.sql ./dump/.
 ```
 
-Baixe o Knime em:
-[text]https://www.knime.com/downloads
-
+Baixe o Knime em: https://www.knime.com/downloads
 
 Certifique que as portas (3306 e 3307) estão livres, umas vez que são utilizadas para a conexão docker (db) - knime
 
