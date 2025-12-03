@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow-metadata content-type="text/html" xmlns="http://www.knime.org/core/node/workflow/metadata/v1.0">
+    <last-modified>2025-11-14T18:09:30.661-03:00</last-modified>
+    <description>&lt;p>docker do servidor falta um port para o mysql connector&lt;/p>&lt;p>&lt;/p></description>
+</workflow-metadata>
