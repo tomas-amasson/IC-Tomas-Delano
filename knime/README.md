@@ -48,4 +48,5 @@ Após isso retire o dump anterior, e, coloque o novo dump no diretório /knime/d
 cd dumps/
 rm <dump antigo.sql>
 cp ../<dump novo.sql> .
+rm ../<dump novo.sql>
 ```
