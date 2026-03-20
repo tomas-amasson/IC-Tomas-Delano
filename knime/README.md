@@ -34,3 +34,18 @@ Para Windows:
 docker-compose up
 ```
 
+
+## Opcionais
+
+Caso queira adicionar um novo arquivo .sql ao banco, use o seguinte comando no diretório knime/
+```bash
+./add_database <dump final.sql> <arquivos.sql que compõem o dump ...>
+```
+
+Após isso retire o dump anterior, e, coloque o novo dump no diretório /knime/dumps da seguinte forma:
+
+```bash
+cd dumps/
+rm <dump antigo.sql>
+cp ../<dump novo.sql> .
+```
