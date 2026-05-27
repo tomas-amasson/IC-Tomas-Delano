@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML version="4.2" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="tomas">
+    <Application name="KNIME" version="5.8.1"/>
+  </Header>
+  <DataDictionary numberOfFields="5">
+    <DataField name="level" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="2.0"/>
+    </DataField>
+    <DataField name="Taxa de Sucesso" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.061068702290076333" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="Velocidade de Resposta" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.008281573498964804" rightMargin="0.1271186440677966"/>
+    </DataField>
+    <DataField name="npower" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="1.0" rightMargin="12.0"/>
+    </DataField>
+    <DataField name="tempo" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1080.0"/>
+    </DataField>
+  </DataDictionary>
+  <TreeModel modelName="DecisionTree" functionName="regression" splitCharacteristic="binarySplit" missingValueStrategy="none" noTrueChildStrategy="returnLastPrediction">
+    <MiningSchema>
+      <MiningField name="level" invalidValueTreatment="asIs"/>
+      <MiningField name="Taxa de Sucesso" invalidValueTreatment="asIs"/>
+      <MiningField name="Velocidade de Resposta" invalidValueTreatment="asIs"/>
+      <MiningField name="npower" invalidValueTreatment="asIs"/>
+      <MiningField name="tempo" invalidValueTreatment="asIs" usageType="target"/>
+    </MiningSchema>
+    <Node id="0" score="378.7222222222222">
+      <Extension name="sumSquaredDeviation" value="3994164.4444444436"/>
+      <Extension name="totalSum" value="72.0"/>
+      <True/>
+      <Node id="1" score="282.01923076923083">
+        <Extension name="sumSquaredDeviation" value="1127568.98076923"/>
+        <Extension name="totalSum" value="52.0"/>
+        <CompoundPredicate booleanOperator="or">
+          <SimplePredicate field="npower" value="4.5" operator="lessOrEqual"/>
+          <SimplePredicate field="npower" operator="isMissing"/>
+        </CompoundPredicate>
+        <Node id="2" score="381.91666666666663">
+          <Extension name="sumSquaredDeviation" value="541545.8333333334"/>
+          <Extension name="totalSum" value="24.0"/>
+          <SimplePredicate field="Velocidade de Resposta" value="0.024056953378021717" operator="lessOrEqual"/>
+          <Node id="3" score="448.75">
+            <Extension name="sumSquaredDeviation" value="225677.49999999997"/>
+            <Extension name="totalSum" value="8.0"/>
+            <SimplePredicate field="Velocidade de Resposta" value="0.015000100247561932" operator="lessOrEqual"/>
+            <Node id="4" score="360.0">
+              <Extension name="sumSquaredDeviation" value="42259.99999999999"/>
+              <Extension name="totalSum" value="4.0"/>
+              <CompoundPredicate booleanOperator="or">
+                <SimplePredicate field="Velocidade de Resposta" value="0.01386141637340188" operator="lessOrEqual"/>
+                <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+              </CompoundPredicate>
+            </Node>
+            <Node id="5" score="537.5">
+              <Extension name="sumSquaredDeviation" value="120405.0"/>
+              <Extension name="totalSum" value="4.0"/>
+              <SimplePredicate field="Velocidade de Resposta" value="0.01386141637340188" operator="greaterThan"/>
+            </Node>
+          </Node>
+          <Node id="6" score="348.49999999999994">
+            <Extension name="sumSquaredDeviation" value="262268.0000000001"/>
+            <Extension name="totalSum" value="16.0"/>
+            <CompoundPredicate booleanOperator="or">
+              <SimplePredicate field="Velocidade de Resposta" value="0.015000100247561932" operator="greaterThan"/>
+              <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+            </CompoundPredicate>
+            <Node id="7" score="243.0">
+              <Extension name="sumSquaredDeviation" value="15418.0"/>
+              <Extension name="totalSum" value="4.0"/>
+              <SimplePredicate field="Taxa de Sucesso" value="0.2678571492433548" operator="lessOrEqual"/>
+            </Node>
+            <Node id="8" score="383.66666666666663">
+              <Extension name="sumSquaredDeviation" value="187488.66666666672"/>
+              <Extension name="totalSum" value="12.0"/>
+              <CompoundPredicate booleanOperator="or">
+                <SimplePredicate field="Taxa de Sucesso" value="0.2678571492433548" operator="greaterThan"/>
+                <SimplePredicate field="Taxa de Sucesso" operator="isMissing"/>
+              </CompoundPredicate>
+              <Node id="9" score="321.0">
+                <Extension name="sumSquaredDeviation" value="1680.0000000000005"/>
+                <Extension name="totalSum" value="6.0"/>
+                <CompoundPredicate booleanOperator="or">
+                  <SimplePredicate field="Velocidade de Resposta" value="0.017585824243724346" operator="lessOrEqual"/>
+                  <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+                </CompoundPredicate>
+                <Node id="10" score="332.6666666666667">
+                  <Extension name="sumSquaredDeviation" value="284.6666666666667"/>
+                  <Extension name="totalSum" value="3.0"/>
+                  <CompoundPredicate booleanOperator="or">
+                    <SimplePredicate field="Taxa de Sucesso" value="0.6349206566810608" operator="lessOrEqual"/>
+                    <SimplePredicate field="Taxa de Sucesso" operator="isMissing"/>
+                  </CompoundPredicate>
+                </Node>
+                <Node id="11" score="309.3333333333333">
+                  <Extension name="sumSquaredDeviation" value="578.6666666666666"/>
+                  <Extension name="totalSum" value="3.0"/>
+                  <SimplePredicate field="Taxa de Sucesso" value="0.6349206566810608" operator="greaterThan"/>
+                </Node>
+              </Node>
+              <Node id="12" score="446.3333333333333">
+                <Extension name="sumSquaredDeviation" value="138683.33333333334"/>
+                <Extension name="totalSum" value="6.0"/>
+                <SimplePredicate field="Velocidade de Resposta" value="0.017585824243724346" operator="greaterThan"/>
+                <Node id="13" score="485.0">
+                  <Extension name="sumSquaredDeviation" value="53144.0"/>
+                  <Extension name="totalSum" value="3.0"/>
+                  <CompoundPredicate booleanOperator="or">
+                    <SimplePredicate field="Velocidade de Resposta" value="0.021432875655591488" operator="lessOrEqual"/>
+                    <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+                  </CompoundPredicate>
+                </Node>
+                <Node id="14" score="407.6666666666667">
+                  <Extension name="sumSquaredDeviation" value="76568.66666666666"/>
+                  <Extension name="totalSum" value="3.0"/>
+                  <SimplePredicate field="Velocidade de Resposta" value="0.021432875655591488" operator="greaterThan"/>
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </Node>
+        <Node id="15" score="196.39285714285717">
+          <Extension name="sumSquaredDeviation" value="141222.67857142855"/>
+          <Extension name="totalSum" value="28.0"/>
+          <CompoundPredicate booleanOperator="or">
+            <SimplePredicate field="Velocidade de Resposta" value="0.024056953378021717" operator="greaterThan"/>
+            <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+          </CompoundPredicate>
+          <Node id="16" score="232.54545454545453">
+            <Extension name="sumSquaredDeviation" value="98898.72727272728"/>
+            <Extension name="totalSum" value="11.0"/>
+            <SimplePredicate field="level" value="0.5" operator="lessOrEqual"/>
+            <Node id="17" score="340.6666666666667">
+              <Extension name="sumSquaredDeviation" value="35298.66666666667"/>
+              <Extension name="totalSum" value="3.0"/>
+              <SimplePredicate field="Velocidade de Resposta" value="0.03907204046845436" operator="lessOrEqual"/>
+            </Node>
+            <Node id="18" score="192.0">
+              <Extension name="sumSquaredDeviation" value="15377.999999999998"/>
+              <Extension name="totalSum" value="8.0"/>
+              <CompoundPredicate booleanOperator="or">
+                <SimplePredicate field="Velocidade de Resposta" value="0.03907204046845436" operator="greaterThan"/>
+                <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+              </CompoundPredicate>
+              <Node id="19" score="229.5">
+                <Extension name="sumSquaredDeviation" value="843.0"/>
+                <Extension name="totalSum" value="4.0"/>
+                <CompoundPredicate booleanOperator="or">
+                  <SimplePredicate field="Velocidade de Resposta" value="0.05443349853157997" operator="lessOrEqual"/>
+                  <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+                </CompoundPredicate>
+              </Node>
+              <Node id="20" score="154.5">
+                <Extension name="sumSquaredDeviation" value="3285.0"/>
+                <Extension name="totalSum" value="4.0"/>
+                <SimplePredicate field="Velocidade de Resposta" value="0.05443349853157997" operator="greaterThan"/>
+              </Node>
+            </Node>
+          </Node>
+          <Node id="21" score="173.0">
+            <Extension name="sumSquaredDeviation" value="18643.999999999996"/>
+            <Extension name="totalSum" value="17.0"/>
+            <CompoundPredicate booleanOperator="or">
+              <SimplePredicate field="level" value="0.5" operator="greaterThan"/>
+              <SimplePredicate field="level" operator="isMissing"/>
+            </CompoundPredicate>
+            <Node id="22" score="190.44444444444446">
+              <Extension name="sumSquaredDeviation" value="674.222222222222"/>
+              <Extension name="totalSum" value="9.0"/>
+              <CompoundPredicate booleanOperator="or">
+                <SimplePredicate field="Velocidade de Resposta" value="0.028537698090076447" operator="lessOrEqual"/>
+                <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+              </CompoundPredicate>
+              <Node id="23" score="195.66666666666666">
+                <Extension name="sumSquaredDeviation" value="175.3333333333336"/>
+                <Extension name="totalSum" value="6.0"/>
+                <CompoundPredicate booleanOperator="or">
+                  <SimplePredicate field="Velocidade de Resposta" value="0.026963776908814907" operator="lessOrEqual"/>
+                  <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+                </CompoundPredicate>
+                <Node id="24" score="200.66666666666666">
+                  <Extension name="sumSquaredDeviation" value="20.666666666666668"/>
+                  <Extension name="totalSum" value="3.0"/>
+                  <CompoundPredicate booleanOperator="or">
+                    <SimplePredicate field="Velocidade de Resposta" value="0.025711188092827797" operator="lessOrEqual"/>
+                    <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+                  </CompoundPredicate>
+                </Node>
+                <Node id="25" score="190.66666666666666">
+                  <Extension name="sumSquaredDeviation" value="4.666666666666666"/>
+                  <Extension name="totalSum" value="3.0"/>
+                  <SimplePredicate field="Velocidade de Resposta" value="0.025711188092827797" operator="greaterThan"/>
+                </Node>
+              </Node>
+              <Node id="26" score="180.0">
+                <Extension name="sumSquaredDeviation" value="8.0"/>
+                <Extension name="totalSum" value="3.0"/>
+                <SimplePredicate field="Velocidade de Resposta" value="0.026963776908814907" operator="greaterThan"/>
+              </Node>
+            </Node>
+            <Node id="27" score="153.375">
+              <Extension name="sumSquaredDeviation" value="12149.875000000004"/>
+              <Extension name="totalSum" value="8.0"/>
+              <SimplePredicate field="Velocidade de Resposta" value="0.028537698090076447" operator="greaterThan"/>
+              <Node id="28" score="138.4">
+                <Extension name="sumSquaredDeviation" value="1587.1999999999998"/>
+                <Extension name="totalSum" value="5.0"/>
+                <CompoundPredicate booleanOperator="or">
+                  <SimplePredicate field="npower" value="2.5" operator="lessOrEqual"/>
+                  <SimplePredicate field="npower" operator="isMissing"/>
+                </CompoundPredicate>
+              </Node>
+              <Node id="29" score="178.33333333333334">
+                <Extension name="sumSquaredDeviation" value="7572.666666666667"/>
+                <Extension name="totalSum" value="3.0"/>
+                <SimplePredicate field="npower" value="2.5" operator="greaterThan"/>
+              </Node>
+            </Node>
+          </Node>
+        </Node>
+      </Node>
+      <Node id="30" score="630.1500000000001">
+        <Extension name="sumSquaredDeviation" value="1116000.5499999996"/>
+        <Extension name="totalSum" value="20.0"/>
+        <SimplePredicate field="npower" value="4.5" operator="greaterThan"/>
+        <Node id="31" score="765.5833333333334">
+          <Extension name="sumSquaredDeviation" value="494228.9166666666"/>
+          <Extension name="totalSum" value="12.0"/>
+          <CompoundPredicate booleanOperator="or">
+            <SimplePredicate field="Velocidade de Resposta" value="0.02570327278226614" operator="lessOrEqual"/>
+            <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+          </CompoundPredicate>
+          <Node id="32" score="480.3333333333333">
+            <Extension name="sumSquaredDeviation" value="34892.666666666664"/>
+            <Extension name="totalSum" value="3.0"/>
+            <SimplePredicate field="Taxa de Sucesso" value="0.4320175349712372" operator="lessOrEqual"/>
+          </Node>
+          <Node id="33" score="860.6666666666666">
+            <Extension name="sumSquaredDeviation" value="133865.99999999997"/>
+            <Extension name="totalSum" value="9.0"/>
+            <CompoundPredicate booleanOperator="or">
+              <SimplePredicate field="Taxa de Sucesso" value="0.4320175349712372" operator="greaterThan"/>
+              <SimplePredicate field="Taxa de Sucesso" operator="isMissing"/>
+            </CompoundPredicate>
+            <Node id="34" score="949.2">
+              <Extension name="sumSquaredDeviation" value="34340.799999999996"/>
+              <Extension name="totalSum" value="5.0"/>
+              <CompoundPredicate booleanOperator="or">
+                <SimplePredicate field="Velocidade de Resposta" value="0.021700043231248856" operator="lessOrEqual"/>
+                <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+              </CompoundPredicate>
+            </Node>
+            <Node id="35" score="750.0">
+              <Extension name="sumSquaredDeviation" value="11346.000000000007"/>
+              <Extension name="totalSum" value="4.0"/>
+              <SimplePredicate field="Velocidade de Resposta" value="0.021700043231248856" operator="greaterThan"/>
+            </Node>
+          </Node>
+        </Node>
+        <Node id="36" score="427.0">
+          <Extension name="sumSquaredDeviation" value="71506.00000000001"/>
+          <Extension name="totalSum" value="8.0"/>
+          <SimplePredicate field="Velocidade de Resposta" value="0.02570327278226614" operator="greaterThan"/>
+          <Node id="37" score="483.0">
+            <Extension name="sumSquaredDeviation" value="10034.0"/>
+            <Extension name="totalSum" value="5.0"/>
+            <CompoundPredicate booleanOperator="or">
+              <SimplePredicate field="Velocidade de Resposta" value="0.035365352407097816" operator="lessOrEqual"/>
+              <SimplePredicate field="Velocidade de Resposta" operator="isMissing"/>
+            </CompoundPredicate>
+          </Node>
+          <Node id="38" score="333.6666666666667">
+            <Extension name="sumSquaredDeviation" value="19658.666666666664"/>
+            <Extension name="totalSum" value="3.0"/>
+            <SimplePredicate field="Velocidade de Resposta" value="0.035365352407097816" operator="greaterThan"/>
+          </Node>
+        </Node>
+      </Node>
+    </Node>
+  </TreeModel>
+</PMML>
