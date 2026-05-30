@@ -1,22 +1,31 @@
 #version: "3.9"
 
 services:
-  db:
+  dec:
+    build:
+      context: .
+      network: host
+    depends_on:
+      decdb:
+        condition: service_healthy
+    ports:
+      - "3308:3309"
+    volumes: 
+      - ./:/dec
+    env_file:
+      - .env
+  decdb:
     image: mysql:5.7
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: decisiondb
+    env_file:
+      - .env
     volumes:
-      - "db_data:/var/lib/mysql"
-    ports:
-      - "3309:3308"
-
+      - "decdb_data:/var/lib/mysql"
     healthcheck:
       test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 --password="root" --silent']
       interval: 3s
       retries: 5
       start_period: 30s  
 volumes:
-  db_data:
+  decdb_data:
 

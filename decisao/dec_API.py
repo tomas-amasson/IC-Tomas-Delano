@@ -7,6 +7,9 @@ from dotenv import load_dotenv
 from marshmallow_sqlalchemy import SQLAlchemySchema
 from marshmallow import fields
 
+MODEL_NAME = "testmodel.pmml"
+
+
 
 def get_uri():
     uri = ''
@@ -62,27 +65,37 @@ class Data_Schema(SQLAlchemySchema):
     npower                  = fields.Integer(required = True)
     level                   = fields.Integer(required = True)
 
+
+
+
+def get_all():
+    all_data    = Data.query.all()
+    ds          = Data_Schema(many= True)
+    return ds.dump(all_data)
+
+def get_by_id(id):
+    specific = Data.query.filter(id == Data.id).first()
+    
+    if (specific == None):
+        return None
+
+    valid = Data_Schema().dump(specific) 
+    return valid
+
+
+
 @app.route('/dec', methods = ['GET'])
 def get():
-    alldata         = Data.query.all()
-    data_schema     = Data_Schema(many = True)
-
-    datas = data_schema.dump(alldata)
-
-    return make_response(jsonify({"Data set": datas}))
+    datas = get_all()
+    return make_response(jsonify({"Data set": datas}), 200)
 
 @app.route('/dec/<int:id>', methods = ['GET'])
 def get_ID(id):
-    specific = Data.query.filter(id == Data.id).first()
 
-    result = Data_Schema().dump(specific)
+    if ((result := get_by_id(id)) == None):
+        return make_response(f"Data was not found.\nid= {id}", 404)
 
-    if (specific == None):
-        return make_response(f"Data was not found.\nid= {id}")
-
-    
-
-    return make_response(jsonify({"Data Set": result}))
+    return make_response(jsonify({"Data Set": result}), 200)
 
 
 @app.route('/dec', methods = ['POST'])
@@ -125,28 +138,68 @@ def delete(id):
     valid    = Data_Schema().dump(specific)
 
     if (specific == None):
-        return make_response(f"No data with:\nid= {id}")
+        return make_response(f"Data was not found.\nid= {id}", 404)
 
 
     db.session.delete(specific)
     db.session.commit()
 
-    return make_response(jsonify({valid}))
+    return make_response(jsonify({valid}), 200)
 
 @app.route('/dec', methods= ['PREDICT'])
 def predict():
     data_in = request.get_json()
-    
-    model = Model.load("testmodel.pmml")
+    ds = Data_Schema()
+    data = ds.load(data_in)
+
+    model = Model.load(MODEL_NAME)
     result = model.predict(data_in)
     
     time = result["predicted_tempo"]
     deep = result["node_id"]
+
     
-    print(result)
-    return make_response(jsonify({"Predicted Time:": time, "Search Deepness": deep}))
+    db.session.add(data)
+    db.session.commit()
+
+    return make_response(jsonify({"Predicted Time:": time, "Search Deepness": deep}), 201)
+
+
+@app.route ('/dec/<int:id>', methods= ['PREDICT'])
+def predict_ID(id):
+    data_set = list()
+        
+    if (id == 0):
+        data_set = get_all()
+    else:
+        data_set.append(get_by_id(id))
+
+    print(data_set)
+    if (len(data_set) == 0 or data_set[0] == None):
+        return make_response(f"Data was not found.\nid={id}", 404)
+
+    result = predict_time(data_set)
+
+    trad = {
+            'predicted_tempo'   : 'Predicted Time',
+            'node_id'           : 'Search Deepnes'}
+
+    jsonable = [{trad.get(str(k), str(k)): v for k, v in item.items()} for item in result]
+
+    return make_response(jsonify({"Results": jsonable}), 200)
+
+def predict_time(data):
+    model = Model.load(MODEL_NAME)
+
+
+    final = []
+    for item in data:
+        final.append(model.predict(item))
+
+    return final
+
 
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(host="0.0.0.0", port = 5000, debug = True)
+    app.run(host="0.0.0.0", port = 3309, debug = True)
