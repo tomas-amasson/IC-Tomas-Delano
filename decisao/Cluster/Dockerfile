@@ -5,12 +5,12 @@ ENV TZ=America/Sao_Paulo
 
 
 COPY libs.txt .
-COPY testmodel.pmml .
+COPY testclust.pmml .
 
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends default-jre
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r libs.txt
 
-EXPOSE 3308
-CMD ["python3", "dec_API.py"]
+EXPOSE 3310
+CMD ["python3", "clusterAPI.py"]

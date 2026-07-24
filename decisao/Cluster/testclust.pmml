@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML version="4.2" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="tomas">
+    <Application name="KNIME" version="5.11.0"/>
+  </Header>
+  <DataDictionary numberOfFields="5">
+    <DataField name="tempo" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="level" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="Taxa de Sucesso" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="Velocidade de Resposta" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="npower" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+  </DataDictionary>
+  <ClusteringModel modelName="k-means" functionName="clustering" modelClass="centerBased" numberOfClusters="3">
+    <MiningSchema>
+      <MiningField name="level" invalidValueTreatment="asIs"/>
+      <MiningField name="Taxa de Sucesso" invalidValueTreatment="asIs"/>
+      <MiningField name="Velocidade de Resposta" invalidValueTreatment="asIs"/>
+      <MiningField name="npower" invalidValueTreatment="asIs"/>
+    </MiningSchema>
+    <ComparisonMeasure kind="distance">
+      <squaredEuclidean/>
+    </ComparisonMeasure>
+    <ClusteringField field="level" compareFunction="absDiff"/>
+    <ClusteringField field="Taxa de Sucesso" compareFunction="absDiff"/>
+    <ClusteringField field="Velocidade de Resposta" compareFunction="absDiff"/>
+    <ClusteringField field="npower" compareFunction="absDiff"/>
+    <Cluster name="cluster_0" size="23">
+      <Array n="4" type="real">0.021739130434782608 0.5404868419987342 0.16686620592219398 0.6561264822134386 </Array>
+    </Cluster>
+    <Cluster name="cluster_1" size="40">
+      <Array n="4" type="real">0.325 0.5502843040726308 0.1854348463384421 0.12954545454545446 </Array>
+    </Cluster>
+    <Cluster name="cluster_2" size="22">
+      <Array n="4" type="real">1.0 0.4415731627064021 0.11135644490077375 0.24380165289256192 </Array>
+    </Cluster>
+  </ClusteringModel>
+</PMML>

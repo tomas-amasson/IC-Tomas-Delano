@@ -1,0 +1,31 @@
+#version: "3.9"
+
+services:
+  dec:
+    build:
+      context: .
+      network: host
+    depends_on:
+      decdb:
+        condition: service_healthy
+    ports:
+      - "3310:3311"
+    volumes: 
+      - ./:/dec
+    env_file:
+      - .env
+  decdb:
+    image: mysql:5.7
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - "decdb_data:/var/lib/mysql"
+    healthcheck:
+      test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 --password="root" --silent']
+      interval: 3s
+      retries: 5
+      start_period: 30s  
+volumes:
+  decdb_data:
+
